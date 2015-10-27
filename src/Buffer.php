@@ -6,6 +6,21 @@ class Buffer
 {
     private $capacity;
     private $buf; // array of array of point, point is array(char, color)
+    private static $graphChars = array(
+        '/' => true,
+        "\\" => true,
+        '|' => true,
+        '-' => true,
+        '=' => true,
+        '_' => true,
+        '+' => true,
+        'X' => true,
+        '*' => true,
+        '<' => true,
+        '>' => true,
+        'V' => true,
+        '^' => true,
+    );
 
     public function __construct($capacity = 0)
     {
@@ -23,13 +38,95 @@ class Buffer
         return count($this->buf);
     }
 
-    private function grow($w, $h) {
+    private function grow($w, $h)
+    {
         if ($this->capacity < $w) {
             $this->capacity = $w;
         }
         for ($i = count($this->buf); $i <= $h; $i++) {
-            $this->buf[$i] = array();
+            $this->buf[$i] = array(array(' ', Color::NIL()));
         }
+    }
+
+    private static function mergeGraphChar($old, $char)
+    {
+        if ($old == $char) {
+            return $old;
+        }
+        $star = 0; // *
+        $x = 0; // X / \
+        $plus = 0; // + | - _ =
+        $arrow = 0; // < > V ^
+        $arrowChar = '';
+
+        foreach (array($old, $char) as $c) {
+            switch ($c) {
+            case '*':
+                $star++;
+                break;
+            case 'X':
+            case '/':
+            case "\\":
+                $x++;
+                break;
+            case '+':
+            case '|':
+            case '-':
+            case '_':
+            case '=':
+                $plus++;
+                break;
+            default:
+                $arrow++;
+                $arrowChar = $c;
+                break;
+            }
+        }
+
+        if ($star > 0) {
+            return '*';
+        }
+
+        if ($x == 2) {
+            return 'X';
+        }
+
+        if ($plus == 2) {
+            if ($old == '+' or $char == '+') {
+                return '+';
+            }
+            if ($old == '|' or $char == '|') {
+                return '+';
+            }
+            return '=';
+        }
+
+        if ($x + $plus == 2) {
+            return '*';
+        }
+
+        if ($arrow == 2) {
+            return 'X';
+        }
+
+        if ($arrow == 1) {
+            return $arrowChar;
+        }
+
+        return '*';
+    }
+
+    private function drawChar($x, $y, $char, Color $color)
+    {
+        list($oldChar) = $this->buf[$y][$x];
+
+        if ($oldChar == ' ') {
+        } elseif (isset(self::$graphChars[$oldChar])) {
+            $char = self::mergeGraphChar($oldChar, $char);
+        } else { // image
+            $char = $oldChar;
+        }
+        $this->buf[$y][$x] = array($char, $color);
     }
 
     public function draw($x, $y, $str, Color $color = null)
@@ -39,20 +136,27 @@ class Buffer
         }
         $this->grow($x + strlen($str), $y);
 
-        for ($i = count($this->buf[$y]); $i < $x; $i++) {
+        $sz = strlen($str) + $x;
+        for ($i = count($this->buf[$y]); $i < $sz; $i++) {
             $this->buf[$y][$i] = array(' ', Color::NIL());
         }
 
         for ($i = 0; $i < strlen($str); $i++) {
-            $this->buf[$y][$x+$i] = array(substr($str, $i, 1), $color);
+            $char = substr($str, $i, 1);
+            $this->drawChar($x+$i, $y, $char, $color);
         }
     }
 
     public function clear($x, $y, $w, $h)
     {
+        $this->grow($x+$w, $y+$h);
         for ($i = $y; $i < $y + $h; $i++) {
-            $str = str_repeat(' ', $w);
-            $this->draw($x, $i, $str);
+            for ($j = count($this->buf[$y]); $j < $x; $j++) {
+                $this->buf[$i][$j] = array(' ', Color::NIL());
+            }
+            for ($j = $x; $j < $x+$w; $j++) {
+                $this->buf[$i][$j] = array(' ', Color::NIL());
+            }
         }
     }
 
