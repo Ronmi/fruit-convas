@@ -198,7 +198,10 @@ class Buffer
 
     private function drawChar($x, $y, $char, Color $color)
     {
-        list($oldChar) = $this->buf[$y][$x];
+        $oldChar = ' ';
+        if (isset($this->buf[$y][$x])) {
+            list($oldChar) = $this->buf[$y][$x];
+        }
 
         if ($oldChar == ' ') {
         } elseif (isset(self::$graphChars[$oldChar])) {
@@ -211,9 +214,12 @@ class Buffer
 
     private function extend($x, $y, $str)
     {
-        $this->grow($x + strlen($str), $y);
-
+        if ($y == 24) {
+            echo "x = $x, str = $str\n";
+        }
         $sz = mb_strlen($str) + $x;
+        $this->grow($sz, $y);
+
         for ($i = count($this->buf[$y]); $i < $sz; $i++) {
             $this->buf[$y][$i] = array(' ', Color::NIL());
         }
@@ -226,13 +232,18 @@ class Buffer
         }
 
         $this->extend($x, $y, $str);
+        $sz = mb_strlen($str);
 
-        for ($fix = 0, $i = 0; $i < mb_strlen($str); $i++) {
+        for ($fix = 0, $i = 0; $i < $sz; $i++) {
             $char = mb_substr($str, $i, 1);
+            $this->drawChar($x+$i+$fix, $y, $char, $color);
             if (self::isWide($char)) {
                 $fix++;
+                $this->buf[$y][$x+$i+$fix] = array(' ', $color);
             }
-            $this->drawChar($x+$i+$fix, $y, $char, $color);
+        }
+        if ($x+$sz+$fix > $this->width()) {
+            $this->capacity = $x + $sz + $fix;
         }
     }
 
@@ -243,13 +254,18 @@ class Buffer
         }
 
         $this->extend($x, $y, $str);
+        $sz = mb_strlen($str);
 
-        for ($fix = 0, $i = 0; $i < mb_strlen($str); $i++) {
+        for ($fix = 0, $i = 0; $i < $sz; $i++) {
             $char = mb_substr($str, $i, 1);
+            $this->buf[$y][$x+$i+$fix] = array($char, $color);
             if (self::isWide($char)) {
                 $fix++;
+                $this->buf[$y][$x+$i+$fix] = array(' ', $color);
             }
-            $this->buf[$y][$x+$i] = array($char, $color);
+        }
+        if ($x+$sz+$fix > $this->width()) {
+            $this->capacity = $x + $sz + $fix;
         }
     }
 
@@ -257,7 +273,7 @@ class Buffer
     {
         $this->grow($x+$w, $y+$h);
         for ($i = $y; $i < $y + $h; $i++) {
-            for ($j = count($this->buf[$y]); $j < $x; $j++) {
+            for ($j = count($this->buf[$i]); $j < $x; $j++) {
                 $this->buf[$i][$j] = array(' ', Color::NIL());
             }
             for ($j = $x; $j < $x+$w; $j++) {
@@ -272,6 +288,11 @@ class Buffer
         $ret = '';
         $sz = count($this->buf[$row]);
         for ($i = $x; $i < $x+$w and $i < $sz; $i++) {
+            if (!isset($this->buf[$row][$i])) {
+                echo sprintf("Dump: row = %s, i = %s, x = %s, w = %s\n", $row, $i, $x, $w);
+                //echo var_export($this->buf[$row]) . "\n";
+                exit(1);
+            }
             list($char, $clr) = $this->buf[$row][$i];
             if ($color != $clr) {
                 $ret .= $clr->export();
