@@ -208,8 +208,8 @@ class Graphics
         $k = ($y2 + $y1) / 2;
 
         while ($theta < \M_PI*2) {
-            $x = floor($h + $r * cos($theta));
-            $y = floor($k + $r2 * sin($theta));
+            $x = round($h + $r * cos($theta));
+            $y = round($k + $r2 * sin($theta));
 
             $line = '-';
             if ($theta > deg2rad(25) and $theta < deg2rad(70)) {
