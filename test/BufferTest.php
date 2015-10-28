@@ -82,12 +82,12 @@ class BufferTest extends PHPUnit_Framework_TestCase
             $c = substr($graphChars, $i, 1);
             $ret[] = array($c, $c, $c);
         }
-        
+
         $x = array(
             array("/", "\\", "X"), array("\\", "/", "X"),
             array('/', 'X', 'X'), array('X', '/', 'X',), array("\\", 'X', 'X'), array('X', "\\", 'X'),
         );
-        
+
         $plus = array();
         for ($i = 0; $i < strlen($plusChar); $i++) {
             $c = substr($plusChar, $i, 1);
@@ -147,10 +147,10 @@ class BufferTest extends PHPUnit_Framework_TestCase
         for ($i = 0; $i < strlen($allChar); $i++) {
             $l('*', substr($allChar, $i, 1), '*');
         }
-        
+
         return array_merge($ret, $x, $plus, $star);
     }
-    
+
     /**
      * @dataProvider dgtP
      */
@@ -162,5 +162,18 @@ class BufferTest extends PHPUnit_Framework_TestCase
 
         list($actual) = $buf->export(0, 0, 1, 1);
         $this->assertEquals($expect, $actual);
+    }
+
+    /**
+     * @dataProvider dgtP
+     */
+    public function testGraphOverwrite($old, $new, $expect)
+    {
+        $buf = new Buffer;
+        $buf->draw(0, 0, $old);
+        $buf->overwrite(0, 0, $new);
+
+        list($actual) = $buf->export(0, 0, 1, 1);
+        $this->assertEquals($new, $actual);
     }
 }
