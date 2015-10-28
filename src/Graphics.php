@@ -188,4 +188,48 @@ class Graphics
         }
         return $this;
     }
+
+    public function drawEllipse($x1, $y1, $x2, $y2)
+    {
+        if ($x1 > $x2) {
+            list($x1, $x2) = array($x2, $x1);
+        }
+        if ($y1 > $y2) {
+            list($y1, $y2) = array($y2, $y1);
+        }
+        list($x1, $y1) = $this->trans($x1, $y1);
+        list($x2, $y2) = $this->trans($x2, $y2);
+
+        $theta = 0;
+        $step = \M_PI / (($x2-$x1) * 2 + ($y2-$y1) * 2);
+        $r = ($x2 - $x1) / 2;
+        $r2 = ($y2 - $y1) / ($x2 - $x1) * $r;
+        $h = ($x2 + $x1) / 2;
+        $k = ($y2 + $y1) / 2;
+
+        while ($theta < \M_PI*2) {
+            $x = floor($h + $r * cos($theta));
+            $y = floor($k + $r2 * sin($theta));
+
+            $line = '-';
+            if ($theta > deg2rad(25) and $theta < deg2rad(70)) {
+                $line = "/";
+            } elseif ($theta > deg2rad(205) and $theta < deg2rad(250)) {
+                $line = "/";
+            } elseif ($theta > deg2rad(115) and $theta < deg2rad(160)) {
+                $line = "\\";
+            } elseif ($theta > deg2rad(295) and $theta < deg2rad(340)) {
+                $line = "\\";
+            } elseif ($theta <= deg2rad(25) or $theta >= deg2rad(340)) {
+                $line = '|';
+            } elseif ($theta <= deg2rad(205) and $theta >= deg2rad(160)) {
+                $line = '|';
+            }
+
+            $this->doDraw($x, $y, $line, $this->color);
+
+            $theta += $step;
+        }
+        return $this;
+    }
 }
