@@ -147,9 +147,12 @@ class Buffer
 
         $this->extend($x, $y, $str);
 
-        for ($i = 0; $i < mb_strlen($str); $i++) {
+        for ($fix = 0, $i = 0; $i < mb_strlen($str); $i++) {
             $char = mb_substr($str, $i, 1);
-            $this->drawChar($x+$i, $y, $char, $color);
+            if (preg_match('/\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}|\p{Bopomofo}/u', $char)) {
+                $fix++;
+            }
+            $this->drawChar($x+$i+$fix, $y, $char, $color);
         }
     }
 
@@ -161,8 +164,11 @@ class Buffer
 
         $this->extend($x, $y, $str);
 
-        for ($i = 0; $i < mb_strlen($str); $i++) {
+        for ($fix = 0, $i = 0; $i < mb_strlen($str); $i++) {
             $char = mb_substr($str, $i, 1);
+            if (preg_match('/\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}|\p{Bopomofo}/u', $char)) {
+                $fix++;
+            }
             $this->buf[$y][$x+$i] = array($char, $color);
         }
     }
@@ -190,6 +196,9 @@ class Buffer
             if ($color != $clr) {
                 $ret .= $clr->export();
                 $color = $clr;
+            }
+            if (preg_match('/\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}|\p{Bopomofo}/u', $char)) {
+                $i++;
             }
             $ret .= $char;
         }
