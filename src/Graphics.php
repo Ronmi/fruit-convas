@@ -8,6 +8,7 @@ class Graphics
     private $xOrig;
     private $yOrig;
     private $color;
+    public $overwrite; // enable overwrite mode
 
     public function __construct(Buffer $buf)
     {
@@ -38,6 +39,17 @@ class Graphics
         return array($x + $this->xOrig, $y + $this->yOrig);
     }
 
+    private function doDraw($x, $y, $str, Color $color)
+    {
+        if ($this->overwrite) {
+            $this->buf->overwrite($x, $y, $str, $color);
+        } else {
+            $this->buf->draw($x, $y, $str, $color);
+        }
+
+        return $this;
+    }
+
     public function drawString($x, $y, $str)
     {
         list($x, $y) = $this->trans($x, $y);
@@ -52,7 +64,7 @@ class Graphics
             $x = 0;
         }
 
-        $this->buf->draw($x, $y, $str, $this->color);
+        $this->doDraw($x, $y, $str, $this->color);
         return $this;
     }
 
@@ -82,7 +94,7 @@ class Graphics
             if ($delta >= 2.5/9.0 and $delta < 5.5/9.0) {
                 $line = '_';
             }
-            $this->buf->draw($x1, $yReal, $line, $this->color);
+            $this->doDraw($x1, $yReal, $line, $this->color);
             $y += $slope;
         }
     }
@@ -110,7 +122,7 @@ class Graphics
                 $x += $slope;
                 continue;
             }
-            $this->buf->draw($xReal, $y1, '|', $this->color);
+            $this->doDraw($xReal, $y1, '|', $this->color);
             $x += $slope;
         }
     }
@@ -142,7 +154,7 @@ class Graphics
                 $x += $slope;
                 continue;
             }
-            $this->buf->draw($xReal, $y1, $line, $this->color);
+            $this->doDraw($xReal, $y1, $line, $this->color);
             $x += $slope;
         }
     }
@@ -161,7 +173,7 @@ class Graphics
             }
 
             for (; $y1 <= $y2; $y1++) {
-                $this->buf->draw($x1, $y1, '|', $this->color);
+                $this->doDraw($x1, $y1, '|', $this->color);
             }
             return $this;
         }

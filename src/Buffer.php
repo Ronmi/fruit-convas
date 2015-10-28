@@ -129,21 +129,41 @@ class Buffer
         $this->buf[$y][$x] = array($char, $color);
     }
 
-    public function draw($x, $y, $str, Color $color = null)
+    private function extend($x, $y, $str)
     {
-        if ($color == null) {
-            $color = Color::NIL();
-        }
         $this->grow($x + strlen($str), $y);
 
         $sz = strlen($str) + $x;
         for ($i = count($this->buf[$y]); $i < $sz; $i++) {
             $this->buf[$y][$i] = array(' ', Color::NIL());
         }
+    }
+
+    public function draw($x, $y, $str, Color $color = null)
+    {
+        if ($color == null) {
+            $color = Color::NIL();
+        }
+
+        $this->extend($x, $y, $str);
 
         for ($i = 0; $i < strlen($str); $i++) {
             $char = substr($str, $i, 1);
             $this->drawChar($x+$i, $y, $char, $color);
+        }
+    }
+
+    public function overwrite($x, $y, $str, Color $color = null)
+    {
+        if ($color == null) {
+            $color = Color::NIL();
+        }
+
+        $this->extend($x, $y, $str);
+
+        for ($i = 0; $i < strlen($str); $i++) {
+            $char = substr($str, $i, 1);
+            $this->buf[$y][$x+$i] = array($char, $color);
         }
     }
 
