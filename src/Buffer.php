@@ -222,4 +222,9 @@ class Buffer
 
         return $ret;
     }
+
+    public function exportAll()
+    {
+        return $this->export(0, 0, $this->capacity, count($this->buf));
+    }
 }
