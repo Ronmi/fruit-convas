@@ -73,9 +73,13 @@ class Buffer
         $offset = 0;
         $code = ord(substr($char, $offset, 1));
         if ($code >= 128) {        //otherwise 0xxxxxxx
-            if ($code < 224) $bytesnumber = 2;                //110xxxxx
-            else if ($code < 240) $bytesnumber = 3;        //1110xxxx
-            else if ($code < 248) $bytesnumber = 4;    //11110xxx
+            if ($code < 224) {
+                $bytesnumber = 2;                //110xxxxx
+            } elseif ($code < 240) {
+                $bytesnumber = 3;        //1110xxxx
+            } elseif ($code < 248) {
+                $bytesnumber = 4;    //11110xxx
+            }
             $codetemp = $code - 192 - ($bytesnumber > 2 ? 32 : 0) - ($bytesnumber > 3 ? 16 : 0);
             for ($i = 2; $i <= $bytesnumber; $i++) {
                 $offset ++;
@@ -137,25 +141,25 @@ class Buffer
 
         foreach (array($old, $char) as $c) {
             switch ($c) {
-            case '*':
-                $star++;
-                break;
-            case 'X':
-            case '/':
-            case "\\":
-                $x++;
-                break;
-            case '+':
-            case '|':
-            case '-':
-            case '_':
-            case '=':
-                $plus++;
-                break;
-            default:
-                $arrow++;
-                $arrowChar = $c;
-                break;
+                case '*':
+                    $star++;
+                    break;
+                case 'X':
+                case '/':
+                case "\\":
+                    $x++;
+                    break;
+                case '+':
+                case '|':
+                case '-':
+                case '_':
+                case '=':
+                    $plus++;
+                    break;
+                default:
+                    $arrow++;
+                    $arrowChar = $c;
+                    break;
             }
         }
 
@@ -267,7 +271,7 @@ class Buffer
         $color = Color::NIL();
         $ret = '';
         $sz = count($this->buf[$row]);
-        for ($i = $x;$i < $x+$w and $i < $sz; $i++) {
+        for ($i = $x; $i < $x+$w and $i < $sz; $i++) {
             list($char, $clr) = $this->buf[$row][$i];
             if ($color != $clr) {
                 $ret .= $clr->export();

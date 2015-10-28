@@ -181,7 +181,7 @@ class Graphics
         $slope = ($y2 - $y1) / ($x2 - $x1);
         if ($slope <= 0.5 and $slope >= -0.5) {
             $this->drawHorizontalThinLine($x1, $y1, $x2, $y2, $slope);
-        } else if ($slope > 5 or $slope < -5) {
+        } elseif ($slope > 5 or $slope < -5) {
             $this->drawVerticalThinLine($x1, $y1, $x2, $y2);
         } else {
             $this->drawOtherThinLine($x1, $y1, $x2, $y2);
