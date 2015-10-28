@@ -123,7 +123,7 @@ class Buffer
         if ($oldChar == ' ') {
         } elseif (isset(self::$graphChars[$oldChar])) {
             $char = self::mergeGraphChar($oldChar, $char);
-        } else { // image
+        } else { // image or text
             $char = $oldChar;
         }
         $this->buf[$y][$x] = array($char, $color);
@@ -133,7 +133,7 @@ class Buffer
     {
         $this->grow($x + strlen($str), $y);
 
-        $sz = strlen($str) + $x;
+        $sz = mb_strlen($str) + $x;
         for ($i = count($this->buf[$y]); $i < $sz; $i++) {
             $this->buf[$y][$i] = array(' ', Color::NIL());
         }
@@ -147,8 +147,8 @@ class Buffer
 
         $this->extend($x, $y, $str);
 
-        for ($i = 0; $i < strlen($str); $i++) {
-            $char = substr($str, $i, 1);
+        for ($i = 0; $i < mb_strlen($str); $i++) {
+            $char = mb_substr($str, $i, 1);
             $this->drawChar($x+$i, $y, $char, $color);
         }
     }
@@ -161,8 +161,8 @@ class Buffer
 
         $this->extend($x, $y, $str);
 
-        for ($i = 0; $i < strlen($str); $i++) {
-            $char = substr($str, $i, 1);
+        for ($i = 0; $i < mb_strlen($str); $i++) {
+            $char = mb_substr($str, $i, 1);
             $this->buf[$y][$x+$i] = array($char, $color);
         }
     }
