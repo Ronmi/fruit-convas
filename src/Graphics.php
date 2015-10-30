@@ -39,6 +39,11 @@ class Graphics
         return $this;
     }
 
+    public function origin()
+    {
+        return array($this->xOrig, $this->yOrig);
+    }
+
     private function trans($x, $y)
     {
         return array($x + $this->xOrig, $y + $this->yOrig);
