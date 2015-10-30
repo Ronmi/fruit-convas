@@ -86,7 +86,7 @@ class WString
         $len = mb_strlen($str);
         $fix = 0;
         for ($i = 0; $i < $len; $i++) {
-            if (self::isWide(mb_substr($str), $i, 1)) {
+            if (self::isWide(mb_substr($str, $i, 1))) {
                 $fix ++;
             }
         }
