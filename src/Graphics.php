@@ -16,6 +16,11 @@ class Graphics
         $this->color = Color::NIL();
     }
 
+    public function getWidth()
+    {
+        return $this->buf->width() - $this->xOrig;
+    }
+
     public function setColor(Color $c)
     {
         $this->color = $c;
