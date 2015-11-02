@@ -28,9 +28,18 @@ $g->overwrite = true; // enable overwrite mode, color will always in overwrite m
 $g->drawLine(5, 2, 5, 15); // no cross point handling
 ```
 
+[![Lines, Ellipses, Wide characters](http://i.imgur.com/9aDHS6S.png)](http://imgur.com/9aDHS6S)
+[![Block of text](http://i.imgur.com/8HjVHi4.png)](http://imgur.com/8HjVHi4)
+
 ## Wide characters
 
 Convas detect wide characters (characters occupied two cells in console, most are CJK characters) using unicode blocks. Feel free to file an issue if any wide character is missing.
+
+## Algorithms, PR Plz!
+
+The algorithms used to draw lines and ellipses are too simple to mark as stable. We need your help!
+
+See [Issue#2](https://github.com/Ronmi/fruit-convas/issues/2) and [Issue#3](https://github.com/Ronmi/fruit-convas/issues/3).
 
 ## License
 
