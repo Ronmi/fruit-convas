@@ -7,11 +7,11 @@
 
 var indexSectionsWithContent =
 {
-  0: "$_bcdefghnorstw",
-  1: "bcg",
+  0: "$_bcdefghinorstw",
+  1: "bcgw",
   2: "f",
-  3: "bcgr",
-  4: "_cdeghnostw",
+  3: "bcgrw",
+  4: "_cdeghinostw",
   5: "$"
 };
 

@@ -110,15 +110,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_fruit_1_1_convas_1_1_color.html#ad02e786757417fb551949088779020b6">   20</a></span>&#160;    <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_fruit_1_1_convas_1_1_color.html#ad02e786757417fb551949088779020b6">__construct</a>($modifier, $fg = 0, $bg = 0)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        $this-&gt;mod = $modifier;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        $this-&gt;mod = ($modifier &lt; 0) ? 0 : $modifier;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        $this-&gt;bg = $bg;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        $this-&gt;fg = $fg;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    }</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="class_fruit_1_1_convas_1_1_color.html#a06412eb3b5af8cd7d978ac6eab667fbf">   27</a></span>&#160;    <span class="keyword">public</span> <span class="keyword">function</span> <a class="code" href="class_fruit_1_1_convas_1_1_color.html#a06412eb3b5af8cd7d978ac6eab667fbf">export</a>()</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">if</span> ($this-&gt;mod == 0) {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;\033[m&quot;</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">if</span> ($this-&gt;mod == 0 and $this-&gt;fg &lt;= 0 and $this-&gt;bg &lt;= 0) {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;\033[0m&quot;</span>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        }</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">if</span> ($this-&gt;fg &lt;= 0 and $this-&gt;bg &lt;= 0) {</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keywordflow">return</span> sprintf(<span class="stringliteral">&quot;\033[%dm&quot;</span>, $this-&gt;mod);</div>
@@ -140,7 +140,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 28 2015 22:17:20 for Fruit Convas by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Nov 2 2015 15:08:32 for Fruit Convas by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.8
 </small></address>
