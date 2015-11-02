@@ -19,15 +19,15 @@ class Color
 
     public function __construct($modifier, $fg = 0, $bg = 0)
     {
-        $this->mod = $modifier;
+        $this->mod = ($modifier < 0) ? 0 : $modifier;
         $this->bg = $bg;
         $this->fg = $fg;
     }
 
     public function export()
     {
-        if ($this->mod == 0) {
-            return "\033[m";
+        if ($this->mod == 0 and $this->fg <= 0 and $this->bg <= 0) {
+            return "\033[0m";
         }
         if ($this->fg <= 0 and $this->bg <= 0) {
             return sprintf("\033[%dm", $this->mod);

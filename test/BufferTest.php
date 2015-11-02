@@ -62,7 +62,7 @@ class BufferTest extends PHPUnit_Framework_TestCase
         $buf->draw(3, 0, 'a', $c1);
         $buf->draw(5, 0, 'a', $c2);
         list($actual) = $buf->export(0, 0, 7, 1);
-        $this->assertEquals("a  \033[1;32ma\033[m \033[1;33;45ma\033[m ", $actual);
+        $this->assertEquals("a  \033[1;32ma\033[0m \033[1;33;45ma\033[0m ", $actual);
         $buf->clear(0, 0, 7, 1);
         list($actual) = $buf->export(0, 0, 7, 1);
         $this->assertEquals("       ", $actual);

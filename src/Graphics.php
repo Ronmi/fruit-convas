@@ -242,4 +242,67 @@ class Graphics
         }
         return $this;
     }
+
+    public function drawTextBlock($x1, $y1, $x2, $y2, $text)
+    {
+        if ($x1 > $x2) {
+            list($x1, $x2) = array($x2, $x1);
+        }
+        if ($y1 > $y2) {
+            list($y1, $y2) = array($y2, $y1);
+        }
+        $block = WString::wordWrap($text, $x2 - $x1);
+        foreach ($block as $line) {
+            if ($y1 > $y2) {
+                break;
+            }
+            $this->drawString($x1, $y1, $line);
+            $y1++;
+        }
+        return $this;
+    }
+
+    public function drawTextBlockCenter($x1, $y1, $x2, $y2, $text)
+    {
+        if ($x1 > $x2) {
+            list($x1, $x2) = array($x2, $x1);
+        }
+        if ($y1 > $y2) {
+            list($y1, $y2) = array($y2, $y1);
+        }
+        $width = $x2 - $x1;
+        $block = WString::wordWrap($text, $width);
+        foreach ($block as $line) {
+            if ($y1 > $y2) {
+                break;
+            }
+            $left = floor(($width - WString::stringWidth($line)) / 2);
+            $pre = str_repeat(' ', $left);
+            $this->drawString($x1, $y1, $pre . $line);
+            $y1++;
+        }
+        return $this;
+    }
+
+    public function drawTextBlockRight($x1, $y1, $x2, $y2, $text)
+    {
+        if ($x1 > $x2) {
+            list($x1, $x2) = array($x2, $x1);
+        }
+        if ($y1 > $y2) {
+            list($y1, $y2) = array($y2, $y1);
+        }
+        $width = $x2 - $x1;
+        $block = WString::wordWrap($text, $width);
+        foreach ($block as $line) {
+            if ($y1 > $y2) {
+                break;
+            }
+            $left = $width - WString::stringWidth($line);
+            $pre = str_repeat(' ', $left);
+            $this->drawString($x1, $y1, $pre . $line);
+            $y1++;
+        }
+        return $this;
+    }
 }

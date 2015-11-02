@@ -81,6 +81,9 @@ class WString
         return false;
     }
 
+    /**
+     * This method DOES NOT SUPPORT ESCAPED CHARACTERS.
+     */
     public static function stringWidth($str)
     {
         $len = mb_strlen($str);
@@ -91,5 +94,106 @@ class WString
             }
         }
         return $len + $fix;
+    }
+
+    /**
+     * This method can process basic escaped characters (\n).
+     */
+    public static function textBlock($text)
+    {
+        $arr = explode("\n", $text);
+        $height = count($arr);
+        $width = 0;
+        foreach ($arr as $row) {
+            $w = self::stringWidth($row);
+            if ($w > $width) {
+                $width = $w;
+            }
+        }
+        return array($width, $height);
+    }
+
+    private static function token($text)
+    {
+        $pre = '';
+        $preSize = 0;
+        $fix = 0;
+        $f = function ($sep, $char, $fix, $pre, $preSize) use ($text) {
+            $ret = $pre;
+            if ($char == '.' or $char == ',' or $char == '-') {
+                $ret .= $char;
+                $preSize++;
+                $sep++;
+                $char = '';
+            }
+            if ($pre == '') {
+                $ret = $char;
+                $preSize = 1;
+                $sep++;
+            }
+            $rest = mb_substr($text, $sep);
+            return array($ret, $preSize+$fix, $rest);
+        };
+
+        for ($sep = 0; $sep < mb_strlen($text); $sep++) {
+            $char = mb_substr($text, $sep, 1);
+            if (preg_match('/\p{Z}/u', $char)) {
+                return $f($sep, $char, $fix, $pre, $preSize);
+            }
+            if ($char == '.' or $char == ',' or $char == '-') {
+                return $f($sep, $char, $fix, $pre, $preSize);
+            }
+            if (self::isWide($char)) {
+                $fix++;
+                return $f($sep, $char, $fix, $pre, $preSize);
+            }
+            $pre .= $char;
+            $preSize++;
+        }
+        return array($text, $preSize, '');
+    }
+
+    private static function wrapword($text, $width)
+    {
+        $ret = array();
+        $cur = '';
+        $curSize = 0;
+        while ($text != '') {
+            list($token, $size, $text) = self::token($text);
+            if ($curSize + $size <= $width) {
+                $cur .= $token;
+                $curSize += $size;
+                continue;
+            }
+            $ret[] = trim($cur);
+            if ($token == ' ') {
+                $token = '';
+                $size = 0;
+            }
+            $cur = $token;
+            $curSize = $size;
+        }
+        if ($cur != '') {
+            $ret[] = $cur;
+        }
+        return $ret;
+    }
+
+    /**
+     * This method can process basic escaped characters (\n).
+     *
+     * The rules we detect word boundry:
+     * 1. \p{Z}
+     * 2. any wide character
+     * 3. .,-
+     */
+    public static function wordWrap($text, $width)
+    {
+        $arr = explode("\n", $text);
+        $ret = array();
+        foreach ($arr as $row) {
+            $ret = array_merge($ret, self::wrapword($row, $width));
+        }
+        return $ret;
     }
 }
