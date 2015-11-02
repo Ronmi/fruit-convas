@@ -32,6 +32,9 @@ class Graphics
         return $this->color;
     }
 
+    /**
+     * Move the origin point.
+     */
     public function transit($x, $y)
     {
         $this->xOrig += $x;
@@ -39,6 +42,9 @@ class Graphics
         return $this;
     }
 
+    /**
+     * Get the absolute position of origin point.
+     */
     public function origin()
     {
         return array($this->xOrig, $this->yOrig);
@@ -199,6 +205,9 @@ class Graphics
         return $this;
     }
 
+    /**
+     * Draw an ellipse within the area (x1, y1) to (x2, y2)
+     */
     public function drawEllipse($x1, $y1, $x2, $y2)
     {
         if ($x1 > $x2) {
@@ -243,6 +252,9 @@ class Graphics
         return $this;
     }
 
+    /**
+     * Draw a block of text, word wrap, left justified, support newline character (\n)
+     */
     public function drawTextBlock($x1, $y1, $x2, $y2, $text)
     {
         if ($x1 > $x2) {
@@ -262,6 +274,9 @@ class Graphics
         return $this;
     }
 
+    /**
+     * Draw a block of text, word wrap, centered, support newline character (\n)
+     */
     public function drawTextBlockCenter($x1, $y1, $x2, $y2, $text)
     {
         if ($x1 > $x2) {
@@ -284,6 +299,9 @@ class Graphics
         return $this;
     }
 
+    /**
+     * Draw a block of text, word wrap, right justified, support newline character (\n)
+     */
     public function drawTextBlockRight($x1, $y1, $x2, $y2, $text)
     {
         if ($x1 > $x2) {
