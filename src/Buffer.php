@@ -137,7 +137,7 @@ class Buffer
         if ($y == 24) {
             echo "x = $x, str = $str\n";
         }
-        $sz = mb_strlen($str) + $x;
+        $sz = mb_strlen($str, WString::ENCODING) + $x;
         $this->grow($sz, $y);
 
         for ($i = count($this->buf[$y]); $i < $sz; $i++) {
@@ -152,10 +152,10 @@ class Buffer
         }
 
         $this->extend($x, $y, $str);
-        $sz = mb_strlen($str);
+        $sz = mb_strlen($str, WString::ENCODING);
 
         for ($fix = 0, $i = 0; $i < $sz; $i++) {
-            $char = mb_substr($str, $i, 1);
+            $char = mb_substr($str, $i, 1, WString::ENCODING);
             $this->drawChar($x+$i+$fix, $y, $char, $color);
             if (WString::isWide($char)) {
                 $fix++;
@@ -174,10 +174,10 @@ class Buffer
         }
 
         $this->extend($x, $y, $str);
-        $sz = mb_strlen($str);
+        $sz = mb_strlen($str, WString::ENCODING);
 
         for ($fix = 0, $i = 0; $i < $sz; $i++) {
-            $char = mb_substr($str, $i, 1);
+            $char = mb_substr($str, $i, 1, WString::ENCODING);
             $this->buf[$y][$x+$i+$fix] = array($char, $color);
             if (WString::isWide($char)) {
                 $fix++;
