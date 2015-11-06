@@ -4,6 +4,8 @@ namespace Fruit\Convas;
 
 class WString
 {
+    const ENCODING = "UTF-8";
+
     private static $CJKBlocks = array(
         array(0x1100, 0x11FF), // Hangul Jamo
         /*
@@ -86,10 +88,10 @@ class WString
      */
     public static function stringWidth($str)
     {
-        $len = mb_strlen($str);
+        $len = mb_strlen($str, self::ENCODING);
         $fix = 0;
         for ($i = 0; $i < $len; $i++) {
-            if (self::isWide(mb_substr($str, $i, 1))) {
+            if (self::isWide(mb_substr($str, $i, 1, self::ENCODING))) {
                 $fix ++;
             }
         }
@@ -131,12 +133,12 @@ class WString
                 $preSize = 1;
                 $sep++;
             }
-            $rest = mb_substr($text, $sep);
+            $rest = mb_substr($text, $sep, null, self::ENCODING);
             return array($ret, $preSize+$fix, $rest);
         };
 
-        for ($sep = 0; $sep < mb_strlen($text); $sep++) {
-            $char = mb_substr($text, $sep, 1);
+        for ($sep = 0; $sep < mb_strlen($text, self::ENCODING); $sep++) {
+            $char = mb_substr($text, $sep, 1, self::ENCODING);
             if (preg_match('/\p{Z}/u', $char)) {
                 return $f($sep, $char, $fix, $pre, $preSize);
             }
